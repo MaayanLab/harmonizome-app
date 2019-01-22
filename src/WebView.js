@@ -1,14 +1,12 @@
-var React = require('react-native');
+import React from 'react';
+import { StyleSheet, WebView } from 'react-native';
 
-var {
-  IntentAndroid,
-  StyleSheet,
-  WebView,
-  View,
-} = React;
+export default class WebV extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-var WebV = React.createClass({
-  render: function() {
+  render() {
     return (
       <WebView
         automaticallyAdjustContentInsets={true}
@@ -20,12 +18,10 @@ var WebV = React.createClass({
       />
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   webView: {
     flex: 1,
   }
 });
-
-module.exports = WebV;

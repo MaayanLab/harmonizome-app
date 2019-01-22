@@ -1,5 +1,5 @@
-var React = require('react-native');
-var StyleVars = require('./StyleVars');
+import React from 'react'
+import StyleVars from './StyleVars'
 
 var RECENT_SEARCHES = [];
 
@@ -11,19 +11,19 @@ function isString(input) {
   return typeof input === 'string' || input instanceof String;
 }
 
-module.exports = {
-  getSearches: function() {
-    return RECENT_SEARCHES;
-  },
-  addSearch: function(searchStr) {
-    if (!exists(searchStr) && isString(searchStr)) {
-      RECENT_SEARCHES.push(searchStr);
-    }
-  },
-  removeSearch: function(searchStr) {
-    if (exists(searchStr)) {
-      var index = RECENT_SEARCHES.indexOf(searchStr);
-      RECENT_SEARCHES.splice(index, 1);
-    }
-  },
-};
+export function getSearches() {
+  return RECENT_SEARCHES;
+}
+
+export function addSearch(searchStr) {
+  if (!exists(searchStr) && isString(searchStr)) {
+    RECENT_SEARCHES.push(searchStr);
+  }
+}
+
+export function removeSearch(searchStr) {
+  if (exists(searchStr)) {
+    var index = RECENT_SEARCHES.indexOf(searchStr);
+    RECENT_SEARCHES.splice(index, 1);
+  }
+}

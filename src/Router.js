@@ -1,23 +1,21 @@
-var React = require('react-native');
-var Home = require('./Home');
-var GeneModal = require('./GeneModal');
-var Styles = require('./StyleVars');
-var {colorPrimary} = Styles;
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
+import GeneModal from './GeneModal';
+import Home from './Home';
 
-var {
-  IntentAndroid,
-  Navigator,
-  StyleSheet,
-  View,
-} = React;
+export default class Router extends React.Component {
+  constructor(props) {
+    super(props)
+  }
 
-var router = React.createClass({
-  componentWillMount: function() {
+  componentWillMount() {
     if (this.props.os === 'android') {
       DEVICE_IS_ANDROID = true;
     }
-  },
-  render: function() {
+  }
+
+  render() {
     var _this = this;
     return (
       <Navigator
@@ -30,13 +28,15 @@ var router = React.createClass({
         renderScene={this._renderScene}
       />
     );
-  },
-  _configureScene: function(route) {
+  }
+
+  _configureScene = (route) => {
     return route.configureScene
     ? route.configureScene
     : Navigator.SceneConfigs.FloatFromRight;
-  },
-  _renderScene: function(route, navigator) {
+  }
+
+  _renderScene = (route, navigator) => {
     var Component = route.component;
     var navBar = route.navigationBar;
     var modal = route.modal;
@@ -85,7 +85,7 @@ var router = React.createClass({
       </View>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   nav: {
@@ -93,5 +93,3 @@ var styles = StyleSheet.create({
     borderBottomWidth: 0
   }
 });
-
-module.exports = router;

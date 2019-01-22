@@ -1,46 +1,34 @@
-var React = require('react-native');
-var {
-  BackAndroid,
-  Image,
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} = React;
-var StyleVars = require('./StyleVars');
-var {
-  colorBorderBottom,
-  colorPrimary,
-  colorPrimaryDark,
-  fontFamily,
-} = StyleVars;
-
-var {Icon,} = require('react-native-icons');
+import React from 'react';
+import PropTypes from 'prop-types';
+import { BackHandler, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { colorPrimary, colorPrimaryDark, fontFamily } from './StyleVars';
 
 var routesWithListeners = [];
 var listenerAdded = false;
 
-var NavBar = React.createClass({
-  propTypes: {
-    hideInfoBtn: React.PropTypes.bool,
-    gene: React.PropTypes.string,
-    category: React.PropTypes.string,
-    library: React.PropTypes.string,
-    onBack: React.PropTypes.func,
-  },
-  getInitialState() {
-    return {
+export default class NavBar extends React.Component {
+  static propTypes = {
+    hideInfoBtn: PropTypes.bool,
+    gene: PropTypes.string,
+    category: PropTypes.string,
+    library: PropTypes.string,
+    onBack: PropTypes.func,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
       modalVisible: false,
-    };
-  },
-  componentDidMount: function() {
+    }
+  }
+
+  componentDidMount() {
     if (this.props.os === 'android') {
       // The listenerAdded variable ensures that only one event listener is added
       // to the Android back button.
       if (!listenerAdded) {
-        BackAndroid.addEventListener(this.props.route.name, () => {
+        BackHandler.addEventListener(this.props.route.name, () => {
           // If there is more than one route in the stack, then pressing the back
           // button should pop the navigator, otherwise, exit the app.
           var currRoutes = this.props.navigator.getCurrentRoutes();
@@ -54,15 +42,17 @@ var NavBar = React.createClass({
         listenerAdded = true;
       }
     }
-  },
-  componentWillUnmount: function() {
+  }
+
+  componentWillUnmount() {
     if (routesWithListeners.length) {
       routesWithListeners.forEach((routeName) => {
-        BackAndroid.removeEventListener(routeName);
+        BackHandler.removeEventListener(routeName);
       });
     }
-  },
-  _setModalVisible(visible) {
+  }
+
+  _setModalVisible = (visible) => {
     this.props.navigator.replace(
       Object.assign(
         {},
@@ -77,21 +67,23 @@ var NavBar = React.createClass({
         }
       )
     );
-  },
-  _formatText(text) {
+  }
+
+  _formatText = (text) => {
     if (text && text.length > 16) {
       return text.substring(0, 16) + '...';
     }
     return text;
-  },
+  }
+
   render() {
     var backBtn;
     var backBtnStyle;
     if (this.props.useXBtn) {
-      backBtn = require('image!nav_x_white');
+      backBtn = require('./img/nav_back_white.png');
       backBtnStyle = styles.navX;
     } else {
-      backBtn = require('image!nav_back_white');
+      backBtn = require('./img/nav_back.png');
       backBtnStyle = styles.navBtn;
     }
     var category = this._formatText(this.props.category) || '';
@@ -131,7 +123,7 @@ var NavBar = React.createClass({
             ? <View style={styles.navBtn}></View>
             : <TouchableOpacity onPress={() => { this._setModalVisible(true); }}>
                 <Image
-                  source={require('image!nav_info')}
+                  source={require('./img/nav_info.png')}
                   resizeMode={'contain'}
                   style={styles.navBtn}
                 />
@@ -141,7 +133,7 @@ var NavBar = React.createClass({
       </View>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   center: {
@@ -193,5 +185,3 @@ var styles = StyleSheet.create({
     width: 28,
   },
 });
-
-module.exports = NavBar;

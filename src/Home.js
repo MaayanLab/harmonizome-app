@@ -1,55 +1,34 @@
-var React = require('react-native');
-var {Icon,} = require('react-native-icons');
-var recentSearches = require('./recentSearches');
-var AutoComplete = require('./Autocomplete');
-var CategoryList = require('./CategoryList');
-var NavBar = require('./NavBar');
-var StyleVars = require('./StyleVars');
-
-var {
-  colorBorderSide,
-  colorBorderTop,
-  colorBorderBottom,
-  colorPrimary,
-  colorPrimaryDark,
-  colorBackground,
-  colorGray,
-  colorDarkGray,
-  colorLightGray,
-  fontFamily,
-  titleFontIOS,
-  titleFontAndroid,
-} = StyleVars;
-
-var {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} = React;
+import React from 'react';
+import { Dimensions, Image, StyleSheet, Text, TextInput, View } from 'react-native';
+import AutoComplete from './Autocomplete';
+import CategoryList from './CategoryList';
+import NavBar from './NavBar';
+import { addSearch } from './recentSearches';
+import { colorBackground, colorBorderBottom, colorBorderSide, colorBorderTop, colorDarkGray, colorPrimary, fontFamily, titleFontAndroid, titleFontIOS } from './StyleVars';
 
 var windowDim = Dimensions.get('window');
 var smallScreen = windowDim.height < 500;
 
-var Home = React.createClass({
-  getInitialState: function() {
-    return {
+export default class Home extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       input: '',
       atHome: true
-    };
-  },
-  render: function() {
+    }
+  }
+
+  render() {
     return (
       <View style={styles.container}>
         { this.state.atHome ?
             <View style={styles.titleContainer}>
-              <Image
-                source={require('image!logo_lg')}
+              {<Image
+                source={require('./img/logo_lg.png')}
                 resizeMode={'contain'}
                 style={styles.titleIcon}
-              />
+              />}
               <Text style={[
                 styles.title,
                 { fontFamily: this.props.os === 'ios'
@@ -157,8 +136,9 @@ var Home = React.createClass({
         }
       </View>
     );
-  },
-  _goToCategories: function(inputGene) {
+  }
+
+  _goToCategories = (inputGene) => {
     this.refs.geneSearchBar.blur();
     this.props.navigator.push({
       name: 'CategoryList',
@@ -170,9 +150,9 @@ var Home = React.createClass({
         />
       )
     });
-    recentSearches.addSearch(inputGene);
+    addSearch(inputGene);
   }
-});
+};
 
 var styles = StyleSheet.create({
   examples: {
@@ -241,5 +221,3 @@ var styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
   }
 });
-
-module.exports = Home;
