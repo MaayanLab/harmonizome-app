@@ -6,6 +6,18 @@ Several online resources are available that enlist properties of human genes, ye
 ### Implementation and Availability:
 The Harmonizome mobile application can be found and downloaded from the [Google Play Store](https://play.google.com/store/apps/details?id=com.maayanlab.harmonizome) for Android devices and [App Store](http://appstore.com/harmonizome) for iOS devices.
 
+## Development
+### If you're running it for the first time
+```
+npm install
+yes | sdkmanager --licenses
+```
+### Android
+Test on android (with android emulator open)
+```
+npx react-native run-android
+```
+
 ## Deployment
 ### Android
 Note: All the files generated here are sensitive and **should not** get committed.
