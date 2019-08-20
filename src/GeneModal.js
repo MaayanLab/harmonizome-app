@@ -1,40 +1,25 @@
-var React = require('react-native');
-var WebV = require('./WebView');
-var NavBar = require('./NavBar');
-var {
-  ActivityIndicatorIOS,
-  Dimensions,
-  IntentAndroid,
-  ListView,
-  Navigator,
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} = React;
-
-var StyleVars = require('./StyleVars');
-var {
-  colorGray,
-  colorLightGray,
-  colorTeal,
-  colorUrl,
-  fontFamily,
-} = StyleVars;
-
-var Button = require('./Button');
+import PropTypes from 'prop-types';
+import React from 'react';
+import { ActivityIndicatorIOS, Dimensions, IntentAndroid, ListView, PixelRatio, StyleSheet, Text, View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
+import Button from './Button';
+import NavBar from './NavBar';
+import { colorGray, colorLightGray, colorTeal, colorUrl, fontFamily } from './StyleVars';
+import WebV from './WebView';
 
 var BGWASH = 'rgba(255,255,255,0.8)';
 var windowDim = Dimensions.get('window');
 
-var GeneModal = React.createClass({
-  propTypes: {
-    gene: React.PropTypes.string.isRequired,
-    onClose: React.PropTypes.func,
-  },
-  getInitialState: function() {
-    return {
+export default class GeneModal extends React.Component {
+  static propTypes = {
+    gene: PropTypes.string.isRequired,
+    onClose: PropTypes.func,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
       networkError: false,
       resultsLoaded: false,
       resultsFound: true,
@@ -42,15 +27,18 @@ var GeneModal = React.createClass({
         rowHasChanged: (row1, row2) => row1 !== row2
       }),
       geneSymbol: '',
-    };
-  },
+    }
+  }
+
   componentWillReceiveProps(newProps) {
     this._getGeneInfo(newProps.gene);
-  },
-  componentDidMount: function() {
+  }
+
+  componentDidMount() {
     this._getGeneInfo(this.props.gene);
-  },
-  render: function() {
+  }
+
+  render() {
     var modalBackgroundStyle = {
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     };
@@ -110,8 +98,9 @@ var GeneModal = React.createClass({
         </View>
       </View>
     );
-  },
-  _renderInfo: function(infoObj) {
+  }
+
+  _renderInfo = (infoObj) => {
     var rowTitle = infoObj.title || '';
     var rowContent = infoObj.content;
     return (
@@ -132,8 +121,9 @@ var GeneModal = React.createClass({
         }
       </View>
     );
-  },
-  _goToUrl: function(ncbiUrl) {
+  }
+
+  _goToUrl = (ncbiUrl) => {
     if (this.props.os === 'android') {
       IntentAndroid.canOpenURL(ncbiUrl, (supported) => {
         if (supported) {
@@ -156,8 +146,9 @@ var GeneModal = React.createClass({
         )
       });
     }
-  },
-  _getGeneInfo: function(inputGene) {
+  }
+
+  _getGeneInfo = (inputGene) => {
     var _this = this;
     var geneApi = 'http://amp.pharm.mssm.edu/Harmonizome/api/1.0/gene/' +
       inputGene + '?min=true';
@@ -216,7 +207,7 @@ var GeneModal = React.createClass({
       })
       .done();
   }
-});
+};
 
 var MODAL_PADDING_TOP = 40;
 var MODAL_PADDING = 20;
@@ -294,5 +285,3 @@ var styles = StyleSheet.create({
     color: colorUrl,
   }
 });
-
-module.exports = GeneModal;

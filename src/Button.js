@@ -1,32 +1,26 @@
-var React = require('react-native');
-var {
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} = React;
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { fontFamily } from './StyleVars';
 
-var StyleVars = require('./StyleVars');
-var {
-  fontFamily,
-} = StyleVars;
 
-var Button = React.createClass({
-  getInitialState: function() {
-    return {
+export default class Button extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       active: false,
-    };
-  },
-  _onHighlight: function() {
+    }
+  }
+
+  _onHighlight = () => {
     this.setState({active: true});
-  },
+  }
 
-  _onUnhighlight: function() {
+  _onUnhighlight = () => {
     this.setState({active: false});
-  },
+  }
 
-  render: function() {
+  render() {
     var colorStyle = {
       color: this.state.active ? '#fff' : '#000',
     };
@@ -38,7 +32,7 @@ var Button = React.createClass({
       </TouchableOpacity>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   button: {
@@ -55,5 +49,3 @@ var styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-
-module.exports = Button;

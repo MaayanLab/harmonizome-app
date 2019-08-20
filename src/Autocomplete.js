@@ -1,50 +1,38 @@
-var React = require('react-native');
-var {Icon,} = require('react-native-icons');
-var recentSearches = require('./recentSearches');
-var StyleVars = require('./StyleVars');
-var {
-  colorBorderSide,
-  colorOrange,
-  colorPrimary,
-  colorPrimaryDark,
-  colorBackground,
-  colorDarkGray,
-  colorLightGray,
-  colorGray,
-  fontFamily,
-} = StyleVars;
+import PropTypes from 'prop-types';
+import React from 'react';
+import { ListView, PixelRatio, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Icon } from 'react-native-vector-icons/FontAwesome';
+import { getSearches } from './recentSearches';
+import { colorBorderSide, colorDarkGray, colorGray, colorOrange, fontFamily } from './StyleVars';
 
-var {
-  ListView,
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} = React;
+export default class AutoComplete extends React.Component {
+  static propTypes = {
+    input: PropTypes.string.isRequired,
+    onSelect: PropTypes.func
+  }
 
-var AutoComplete = React.createClass({
-  propTypes: {
-    input: React.PropTypes.string.isRequired,
-    onSelect: React.PropTypes.func
-  },
-  getInitialState: function() {
-    return {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       networkError: false,
       inputValid: true,
       autocompleteOptions: [],
       geneDataSrc: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
       })
-    };
-  },
-  componentWillReceiveProps: function(newProps) {
+    }
+  }
+
+  componentWillReceiveProps(newProps) {
     this._matchGenes(newProps.input);
-  },
-  componentWillMount: function() {
+  }
+
+  componentWillMount() {
     this._matchGenes(this.props.input);
-  },
-  render: function() {
+  }
+
+  render() {
     var _this = this;
     var numOpts = this.state.networkError
       ? 1
@@ -77,8 +65,9 @@ var AutoComplete = React.createClass({
         </View>
       );
     }
-  },
-  _renderGenes: function(geneObj) {
+  }
+
+  _renderGenes = (geneObj) => {
     // Make matched section of string bold by spliting it.
     // Don't need to worry about invalid input here because input is already
     // checked when geneObj is generated
@@ -93,6 +82,7 @@ var AutoComplete = React.createClass({
     var options = geneObj.option.split(inpRegEx);
     var matchExists = options.length === 2 && (!!options[0] || !!options[1]);
     var perfectMatch = options.length === 2 && !options[0] && !options[1];
+    console.log(options, matchExists, perfectMatch)
 
     return (
       <TouchableHighlight
@@ -121,7 +111,7 @@ var AutoComplete = React.createClass({
                 {geneObj.option}
               </Text>
           }
-          { geneObj.recent
+          {/* geneObj.recent
             ? <Icon
                 name='foundation|clock'
                 size={25}
@@ -134,12 +124,13 @@ var AutoComplete = React.createClass({
                 color={colorGray}
                 style={styles.searchIcon}
               />
-          }
+          */}
         </View>
       </TouchableHighlight>
     );
-  },
-  _matchGenes: function(inp) {
+  }
+
+  _matchGenes = (inp) => {
     // Escape all '.'s and '\'s
     var input = inp.replace(/\./g, '\\\.').replace('\\', '\\\\');
     var _this = this;
@@ -153,7 +144,7 @@ var AutoComplete = React.createClass({
     }
     var acOptions = [];
     var names = [];
-    var recent = recentSearches.getSearches();
+    var recent = getSearches();
     // Iterate backwards to get most recent searches first
     for (var i = recent.length; i === 0, i--;) {
       // If empty string, or recent search matches and there are no more than
@@ -203,8 +194,7 @@ var AutoComplete = React.createClass({
       })
       .done();
   }
-
-});
+};
 
 var styles = StyleSheet.create({
   bold: {
@@ -258,5 +248,3 @@ var styles = StyleSheet.create({
     width: 25,
   }
 });
-
-module.exports = AutoComplete;

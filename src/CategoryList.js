@@ -1,52 +1,33 @@
-var React = require('react-native');
-var LibraryList = require('./LibraryList');
-var NavBar = require('./NavBar');
-var StyleVars = require('./StyleVars');
-
-var {
-  colorBackground,
-  colorBorderTop,
-  colorBorderSide,
-  colorBorderBottom,
-  colorPrimaryDark,
-  colorGray,
-  colorGrayDark,
-  fontFamily,
-} = StyleVars;
-
-var {
-  ActivityIndicatorIOS,
-  Dimensions,
-  Image,
-  ListView,
-  PixelRatio,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} = React;
+import PropTypes from 'prop-types';
+import React from 'react';
+import { ActivityIndicator, Dimensions, Image, ListView, StyleSheet, Text, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import LibraryList from './LibraryList';
+import NavBar from './NavBar';
+import { colorBackground, colorBorderBottom, colorBorderSide, colorBorderTop, fontFamily } from './StyleVars';
 
 var lastResult = [];
 var windowDim = Dimensions.get('window');
 var smallHeight = windowDim.width < 325;
 
-var Results = React.createClass({
-  propTypes: {
-    gene: React.PropTypes.string,
-    useLastResult: React.PropTypes.bool,
-  },
-  getInitialState: function() {
-    return {
+export default class Results extends React.Component {
+  static propTypes = {
+    gene: PropTypes.string,
+    useLastResult: PropTypes.bool,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
       networkError: false,
       resultsLoaded: false,
       categoryDataSrc: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
       }),
-    };
-  },
-  componentWillMount: function() {
+    }
+  }
+
+  componentWillMount() {
     if (this.props.useLastResult) {
       this.setState({
         resultsLoaded: true,
@@ -55,13 +36,14 @@ var Results = React.createClass({
     } else {
       this._getGSLibraries(this.props.gene);
     }
-  },
-  render: function() {
+  }
+
+  render() {
     if (this.state.networkError) {
       return (
         <View style={styles.centerWrapper}>
           <Image
-            source={require('image!hazard')}
+            source={require('./img/hazard.png')}
             resizeMode={'contain'}
             style={styles.errorIcon}
           />
@@ -76,7 +58,7 @@ var Results = React.createClass({
     } else if (!this.state.resultsLoaded) {
       return (
         <View style={styles.centerWrapper}>
-          <ActivityIndicatorIOS
+          <ActivityIndicator
             animating={true}
             color='#808080'
             size='large' />
@@ -93,17 +75,18 @@ var Results = React.createClass({
         />
       );
     }
-  },
-  _renderCategories: function(catObj) {
+  }
+
+  _renderCategories = (catObj) => {
     var icons = {
-      'Cell Types': require('image!cell_types'),
-      Crowd: require('image!crowd'),
-      'Disease/Drugs': require('image!drugs'),
-      Legacy: require('image!legacy'),
-      Misc: require('image!misc'),
-      Ontologies: require('image!ontologies'),
-      Pathways: require('image!pathways'),
-      Transcription: require('image!dna'),
+      'Cell Types': require('./img/cell_types.png'),
+      Crowd: require('./img/crowd.png'),
+      'Disease/Drugs': require('./img/drugs.png'),
+      Legacy: require('./img/legacy.png'),
+      Misc: require('./img/misc.png'),
+      Ontologies: require('./img/ontologies.png'),
+      Pathways: require('./img/pathways.png'),
+      Transcription: require('./img/dna.png'),
     };
     return (
       <View style={styles.rowWrapper}>
@@ -121,8 +104,9 @@ var Results = React.createClass({
         </TouchableHighlight>
       </View>
     );
-  },
-  _goToLibraries: function(categoryObj) {
+  }
+
+  _goToLibraries = (categoryObj) => {
     this.props.navigator.push({
       name: 'Library List',
       component: LibraryList,
@@ -137,8 +121,9 @@ var Results = React.createClass({
         />
       )
     });
-  },
-  _getGSLibraries: function(inputGene) {
+  }
+
+  _getGSLibraries = (inputGene) => {
     var _this = this;
     var termsUrl = 'http://amp.pharm.mssm.edu/ha-libraries/results?' +
       'gene=' + inputGene;
@@ -158,7 +143,7 @@ var Results = React.createClass({
       })
       .done();
   }
-});
+};
 
 var styles = StyleSheet.create({
   bold: {
@@ -235,5 +220,3 @@ var styles = StyleSheet.create({
   }
 });
 
-
-module.exports = Results;

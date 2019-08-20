@@ -2,7 +2,7 @@ var borderTop = '#e5e6e9';
 var borderSide = '#dfe0e4';
 var borderBottom = '#d0d1d5';
 
-module.exports = {
+export default {
   // colorBackground: '#343844',
   // colorBackground: '#ddd',
   colorBackground: '#e9eaed',

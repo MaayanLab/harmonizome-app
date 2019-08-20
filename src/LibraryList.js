@@ -1,48 +1,32 @@
-var React = require('react-native');
-var WebV = require('./WebView');
-var NavBar = require('./NavBar');
-var TermList = require('./TermList');
-var StyleVars = require('./StyleVars');
-var {
-  colorBackground,
-  colorBorderBottom,
-  colorBorderSide,
-  colorBorderTop,
-  colorDarkGray,
-  colorLightGray,
-  colorGray,
-  colorUrl,
-  fontFamily,
-} = StyleVars;
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Image, ListView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
+import NavBar from './NavBar';
+import { colorBackground, colorBorderBottom, colorBorderSide, colorBorderTop, colorUrl, fontFamily } from './StyleVars';
+import TermList from './TermList';
+import WebV from './WebView';
 
-var {
-  Image,
-  ListView,
-  Navigator,
-  PixelRatio,
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  TouchableHighlight,
-  WebView,
-} = React;
+export default class LibraryResults extends React.Component {
+  static propTypes = {
+    categoryName: PropTypes.string,
+    categoryObj: PropTypes.object,
+  }
 
-var LibraryResults = React.createClass({
-  propTypes: {
-    categoryName: React.PropTypes.string,
-    categoryObj: React.PropTypes.object,
-  },
-  getInitialState: function() {
-    var libs = [{ text: 'Select a library to view its related terms'}];
-    libs.push.apply(libs, this.props.categoryObj.libraries);
-    return {
+  constructor(props) {
+    super(props)
+
+    this.state = {
       libraryDataSrc: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
-      }).cloneWithRows(libs),
-    };
-  },
-  render: function() {
+      }).cloneWithRows([
+        { text: 'Select a library to view its related terms'},
+        ...this.props.categoryObj.libraries
+      ]),
+    }
+  }
+
+  render() {
     return (
       <ListView
         dataSource={this.state.libraryDataSrc}
@@ -51,8 +35,9 @@ var LibraryResults = React.createClass({
         automaticallyAdjustContentInsets={false}
       />
     );
-  },
-  _goToTerms: function(libObj) {
+  }
+
+  _goToTerms = (libObj) => {
     this.props.navigator.push({
       name: 'Term List',
       component: TermList,
@@ -76,8 +61,9 @@ var LibraryResults = React.createClass({
         />
       )
     });
-  },
-  _goToUrl: function(libName, libUrl) {
+  }
+
+  _goToUrl = (libName, libUrl) => {
     this.props.navigator.push({
       name: 'Library View',
       component: WebV,
@@ -91,8 +77,9 @@ var LibraryResults = React.createClass({
         />
       )
     });
-  },
-  _renderLibrary: function(libObj) {
+  }
+
+  _renderLibrary = (libObj) => {
     if (libObj.text && libObj.text.length) {
       return <Text style={styles.libText}>{libObj.text}</Text>;
     }
@@ -116,7 +103,7 @@ var LibraryResults = React.createClass({
             style={styles.rowNav}
             onPress={() => this._goToTerms(libObj)}>
             <Image
-              source={require('image!nav_forward')}
+              source={require('./img/nav_forward.png')}
               resizeMode={'contain'}
               style={{height: 80, width: 20}}
             />
@@ -125,7 +112,7 @@ var LibraryResults = React.createClass({
       </TouchableOpacity>
     );
   }
-});
+};
 
 var styles = StyleSheet.create({
   libText: {
@@ -186,5 +173,3 @@ var styles = StyleSheet.create({
     color: colorUrl,
   }
 });
-
-module.exports = LibraryResults;

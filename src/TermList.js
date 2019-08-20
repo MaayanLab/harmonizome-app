@@ -1,52 +1,39 @@
-var React = require('react-native');
-var WebV = require('./WebView');
-var NavBar = require('./NavBar');
-var StyleVars = require('./StyleVars');
+import PropTypes from 'prop-types';
+import React from 'react';
+import { IntentAndroid, ListView, StyleSheet, Text, View } from 'react-native';
+import { Navigator } from 'react-native-deprecated-custom-components';
+import NavBar from './NavBar';
+import { colorBackground, colorBorderBottom, colorBorderSide, colorBorderTop, colorUrl, fontFamily } from './StyleVars';
+import WebV from './WebView';
 
-var {
-  colorBackground,
-  colorBorderBottom,
-  colorBorderSide,
-  colorBorderTop,
-  colorLightGray,
-  colorGray,
-  colorUrl,
-  fontFamily,
-} = StyleVars;
+export default class LibraryResults extends React.Component {
+  static propTypes = {
+    libraryName: PropTypes.string,
+    idName: PropTypes.string,
+    idRegExp: PropTypes.string,
+    idRegExpFlag: PropTypes.string,
+    baseUrl: PropTypes.string,
+    splitChar: PropTypes.string,
+    useFirstTerm: PropTypes.bool,
+    useTermName: PropTypes.bool,
+    libraryDesc: PropTypes.string,
+    terms: PropTypes.array
+  }
 
-var {
-  IntentAndroid,
-  ListView,
-  Navigator,
-  PixelRatio,
-  StyleSheet,
-  View,
-  Text,
-} = React;
+  constructor(props) {
+    super(props)
 
-var LibraryResults = React.createClass({
-  propTypes: {
-    libraryName: React.PropTypes.string,
-    idName: React.PropTypes.string,
-    idRegExp: React.PropTypes.string,
-    idRegExpFlag: React.PropTypes.string,
-    baseUrl: React.PropTypes.string,
-    splitChar: React.PropTypes.string,
-    useFirstTerm: React.PropTypes.bool,
-    useTermName: React.PropTypes.bool,
-    libraryDesc: React.PropTypes.string,
-    terms: React.PropTypes.array
-  },
-  getInitialState: function() {
-    var terms = [{ libraryDesc: this.props.libraryDesc }];
-    terms.push.apply(terms, this.props.terms.sort());
-    return {
+    this.state = {
       termsDataSrc: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
-      }).cloneWithRows(terms),
-    };
-  },
-  render: function() {
+      }).cloneWithRows([
+        { libraryDesc: this.props.libraryDesc },
+        ...this.props.terms.sort()
+      ]),
+    }
+  }
+
+  render() {
     return (
       <ListView
         dataSource={this.state.termsDataSrc}
@@ -55,8 +42,9 @@ var LibraryResults = React.createClass({
         automaticallyAdjustContentInsets={false}
       />
     );
-  },
-  renderTerms: function(term) {
+  }
+
+  renderTerms = (term) => {
     if (!!term.libraryDesc || term.libraryDesc === '') {
       return <Text style={styles.libraryDesc}>{term.libraryDesc}</Text>;
     }
@@ -153,8 +141,9 @@ var LibraryResults = React.createClass({
         </View>
       </View>
     );
-  },
-  _goToUrl: function(url) {
+  }
+
+  _goToUrl = (url) => {
     if (this.props.os === 'android') {
       IntentAndroid.canOpenURL(url, (supported) => {
         if (supported) {
@@ -177,7 +166,7 @@ var LibraryResults = React.createClass({
       });
     }
   }
-});
+};
 
 var styles = StyleSheet.create({
   libraryDesc: {
@@ -222,5 +211,3 @@ var styles = StyleSheet.create({
     color: colorUrl,
   },
 });
-
-module.exports = LibraryResults;
